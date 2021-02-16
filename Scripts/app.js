@@ -164,12 +164,12 @@
     function displayContactList() 
     {
 
-      // AJAX
+      // AJAX EXAMPLE
       // STEP 1: Create XHR Object
       let XHR = new XMLHttpRequest();
 
       // STEP 2: Open the Request - make a connection with the Server
-      XHR.open("GET", "data.json");
+      XHR.open("GET", "./Data/data.json");
 
       // STEP 3: Send the Request to the server
       XHR.send();
@@ -200,7 +200,6 @@
             contactIndex++;
           }
 
-          console.log(dataString);
         }
       });
 
