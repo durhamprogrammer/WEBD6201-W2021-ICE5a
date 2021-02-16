@@ -163,6 +163,51 @@
 
     function displayContactList() 
     {
+
+      // AJAX
+      // STEP 1: Create XHR Object
+      let XHR = new XMLHttpRequest();
+
+      // STEP 2: Open the Request - make a connection with the Server
+      XHR.open("GET", "data.json");
+
+      // STEP 3: Send the Request to the server
+      XHR.send();
+
+      // STEP 4: Create an Event Listener / Handler
+      XHR.addEventListener("readystatechange", function() 
+      {
+        // STEP 5: Ensure that the server ReadyState is 4 and server status is 200
+        if(XHR.readyState === 4 && XHR.status === 200)
+        {
+          let contactListData = JSON.parse(XHR.responseText);
+          let dataString = "";
+          let contactIndex = 1;
+          for (const contact of contactListData.contacts) 
+          {
+            let newContact = new core.Contact();
+            newContact.fromJSON(newContact);
+
+            dataString += `<tr>
+            <th scope="row" class="text-center">${contactIndex}</th>
+            <td>${contact.FullName}</td>
+            <td>${contact.ContactNumber}</td>
+            <td>${contact.EmailAddress}</td>
+            <td class="text-center"><button value="${contactIndex}" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i> Edit</button></td>
+            <td class="text-center"><button value="${contactIndex}" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i> Delete</button></td>
+            </tr>`;
+
+            contactIndex++;
+          }
+
+          console.log(dataString);
+        }
+      });
+
+
+
+
+
       if (localStorage.length > 0) 
       {
         let contactList = document.getElementById("contactList");
