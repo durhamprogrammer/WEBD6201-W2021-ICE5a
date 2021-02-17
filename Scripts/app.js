@@ -273,8 +273,61 @@
 
     function displayLogin()
     {
+      if(sessionStorage.getItem("user"))
+      {
+        location.href = "contact-list.html";
+      }
 
+      let messageArea = $("#messageArea");
+      messageArea.hide();
+
+      $("#loginButton").on("click", (event)=> 
+      {
+        let username = $("#username").val();
+        let password = $("#password").val();
+        let success = false;
+
+        $.getJSON("./Data/users.json", function(data) 
+        {
+          let newUser = new core.User();
+
+          // search for username and password
+         for (const user of data.users) 
+         {
+           if(username == user.UserName && password == user.Password)
+           {
+             newUser.fromJSON(user);
+             success = true;
+             break;
+           }
+         }
+
+         if(success)
+         {
+           // add user to session storage
+           sessionStorage.setItem("user", newUser.serialize());
+           messageArea.removeAttr("class").hide();
+
+           // go to secure area
+           location.href = "contact-list.html";
+         }
+         else
+         {
+            $("#username").trigger("focus").trigger("select");
+            messageArea.show().addClass("alert alert-danger").text("Error: Invalid login information.");
+         }
+        });
+      });
+
+      $("#cancelButton").on("click", function()
+      {
+        // clear the form
+        document.forms[0].reset();
+        // return to the home page
+        location.href = "index.html";
+      })
     }
+  
 
     function displayRegister()
     {
@@ -314,6 +367,27 @@
           case "Register":
             displayRegister();
           break;
+        }
+
+        // common functions for all pages
+        if(sessionStorage.length > 0)
+        {
+          if(sessionStorage.getItem("user"))
+          {
+
+            let loginLink = document.getElementById("login");
+            loginLink.innerHTML = `
+            <a id="logout" class="nav-link" aria-current="page" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            `;
+
+            $("#logout").on("click", function() 
+            {
+              // perform logout
+              sessionStorage.clear();
+              // redirect back to login
+              location.href = "login.html";
+            });
+          }
         }
         
     }
